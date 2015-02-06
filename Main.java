@@ -29,6 +29,39 @@ public class Main
                 //ranks in increasing order with 4 leading gray images
 
 
+    /**
+     * randCardName takes the info based on the current state of the deck and returns the name of
+     * the next unused card to lay out on the canvas
+     * much help taken from:
+     * http://stackoverflow.com/questions/19125530/how-to-choose-a-random-element-in-this-array-only-once-accros-all-declared-objec
+     * @param cards - the array of all the cards
+     * @param counter - the current index of cards played
+     * @param used - the cards that have been used so far
+     * @return the name of the next unused card
+     */
+    public static String randCardName(String[] cards, int counter, ArrayList<String> used)
+    {
+    	String name = "";
+    	String checkedFile = "";
+    	if (counter < 4)
+    	{
+    			// then pull out a gray one
+    			checkedFile = cards[counter];
+    	}
+    	else
+    	{
+    		do
+    	 	{
+    	 		checkedFile = cards[(int) (Math.random() * (cards.length - 4)) + 4];
+    	 		if (!used.contains(checkedFile)) break;
+    	 	} while (true);
+    	}
+    	name = checkedFile;
+    	used.add(name);
+    	return name;
+    }
+
+
     /** - SJO
      * orderedCardName takes the info based on the current state of the deck and returns the name of
      * the next unused card to lay out on the canvas
