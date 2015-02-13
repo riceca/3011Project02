@@ -2,12 +2,8 @@
  * First Last
  */
 
-import javax.swing.JFrame;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.JLabel;
 
 import java.io.File;
 
@@ -24,7 +20,7 @@ import java.awt.event.MouseEvent;
 
 public class Main
 {
-    public static final int PERIMETER_BEVEL = 20;               //space between panel border and perimeter cards
+    public static final int PERIMETER_BEVEL = 10;               //space between panel border and perimeter cards
     public static final int INTERIOR_BEVEL = 5;                 //space between cards
     public static final String CARD_FOLDER="cardImages/";
     public static final int CARD_HEIGHT = 97;
@@ -32,8 +28,8 @@ public class Main
     public static final String[] SUITS = {"Hearts", "Diamonds", "Spades", "Clubs"};
     public static final String[] RANKS = { "ace","two","three","four","five","six","seven",
             "eight","nine","ten","jack","queen","king"};
-    public static final int PANEL_HEIGHT = (2*PERIMETER_BEVEL) + (4*CARD_HEIGHT) + (3*INTERIOR_BEVEL);
-    public static final int PANEL_WIDTH = (2*PERIMETER_BEVEL) + (14*CARD_WIDTH) + (13*INTERIOR_BEVEL);
+    public static final int PANEL_HEIGHT = (PERIMETER_BEVEL) + (4*CARD_HEIGHT) + (3*INTERIOR_BEVEL);
+    public static final int PANEL_WIDTH = (PERIMETER_BEVEL) + (14*CARD_WIDTH) + (13*INTERIOR_BEVEL);
     public static final String   BACKGROUND_COLOR = "#64C866";  //window background color [hex] - Changed from #76ee00 (lime green) to a more game table-y green
     public static List<JLabel> deck = new ArrayList<JLabel>();
     public static MouseInputAdapter mouseHandler = new MouseInputAdapter()
@@ -93,7 +89,7 @@ public class Main
                 //in a 4 x 14 grid pattern [extra credit]
                 //i/4 is the column number to draw in
                 //i%4 is the row number to draw in
-                for (int i = 0; i < SUITS.length*RANKS.length; i++) {
+                for (int i = 0; i < ((SUITS.length)*(RANKS.length+1)); i++) {
                     gray.paintIcon(this, g,
                             INTERIOR_BEVEL + (i / 4) * (CARD_WIDTH + INTERIOR_BEVEL),
                             INTERIOR_BEVEL + (i % 4) * (CARD_HEIGHT + INTERIOR_BEVEL));
@@ -116,12 +112,13 @@ public class Main
         int col = 0;
         int row = 0;
         // Add Mouse listeners and add it to the panel
+        int counter = 0;
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5+CARD_WIDTH, 5, 5));
+
         for(JLabel card: deck)
         {
             card.addMouseMotionListener(mouseHandler);
             card.addMouseListener(mouseHandler);
-            card.setLocation(INTERIOR_BEVEL + (row * (CARD_WIDTH + INTERIOR_BEVEL)),
-                    INTERIOR_BEVEL + (col * (CARD_HEIGHT + INTERIOR_BEVEL)));
             panel.add(card);
         }
 
