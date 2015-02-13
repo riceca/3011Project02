@@ -1,5 +1,5 @@
 /**
- * Spencer Ollila
+ * First Last
  */
 
 import javax.swing.JFrame;
@@ -21,8 +21,11 @@ public class Main
 {
     public static final int PERIMETER_BEVEL = 20;               //space between panel border and perimeter cards
     public static final int INTERIOR_BEVEL = 5;                 //space between cards
+    public static final String CARD_FOLDER="cardImages";
     public static final int CARD_HEIGHT = 97;
-    public static final int CARD_WIDTH = 73;                    
+    public static final int CARD_WIDTH = 73; 
+    public static final String[] RANKS = { "gray","gray","gray","gray","ace","two","three","four","five","six","seven",
+					   "eight","nine","ten","jack","queen","king"};
     public static final int PANEL_HEIGHT = (2*PERIMETER_BEVEL) + (4*CARD_HEIGHT) + (3*INTERIOR_BEVEL);
     public static final int PANEL_WIDTH = (2*PERIMETER_BEVEL) + (14*CARD_WIDTH) + (13*INTERIOR_BEVEL);
     public static final String   BACKGROUND_COLOR = "#76ee00";  //window background color [hex] -SJO swapped to lime green
@@ -60,50 +63,6 @@ public class Main
     	used.add(name);
     	return name;
     }
-
-
-    /** - SJO
-     * orderedCardName takes the info based on the current state of the deck and returns the name of
-     * the next unused card to lay out on the canvas
-     * @param counter - the current spot in the cards
-     * @param type - the class of card
-     * @return the name of the next unused ordered card
-     */
-    public static String orderedCardName(int counter, int type)
-    {
-        String name = "";
-        if (counter == 0)
-        {
-            return "cardImages/gray.gif";
-        }
-
-        String[] suit = new String[4];
-        suit[0] = "Clubs";
-        suit[1] = "Diamonds";
-        suit[2] = "Hearts";
-        suit[3] = "Spades";
-
-        String[] number = new String[14];
-        number[1] = "ace";
-        number[2] = "two";
-        number[3] = "three";
-        number[4] = "four";
-        number[5] = "five";
-        number[6] = "six";
-        number[7] = "seven";
-        number[8] = "eight";
-        number[9] = "nine";
-        number[10] = "ten";
-        number[11] = "jack";
-        number[12] = "queen";
-        number[13] = "king";
-
-        name = "cardImages/"+number[counter]+suit[type]+".gif";
-        // System.out.println(name);
-        return name;
-    }
-
-
     
     /**
      * main method which prints out the deck of cards in rank order gray image
@@ -111,39 +70,49 @@ public class Main
      * each row is a unique suit in order spades, hearts, diamonds, and clubs.
      * @param args, the arguments for the main method [ignored]
      */
-    public static void main(String[] args)
-    {
-        JFrame window = new JFrame("Deck");
-        JPanel panel = new JPanel() {
-            public void paintComponent(Graphics g) {                     //find each rank of card in increasing
-                super.paintComponent(g);                                 //order as specified in the array. All
-
-                // reset counter because we want to start placing them at 0, not 56
-                int counter = 0;
-                int type = 0;
-                // for each card collection, pull one out
-                // and print it to the screen.
-                while (type < 4)
-                {
-                	new ImageIcon(orderedCardName(counter, type)).paintIcon(this, g,
-                			PERIMETER_BEVEL + counter * (CARD_WIDTH + INTERIOR_BEVEL),			    //counter/4 keeps track of the correct column
-                  			PERIMETER_BEVEL + (3-(type%4)) *(CARD_HEIGHT + INTERIOR_BEVEL));		//3-(type%4) keeps track of the correct row
-                    if (counter == 13)										                    	//in which to print the card image
-                    {
-                        counter = 0;
-                        type++;
-                    } else
-                    {
-                        counter++;
-                    }
-                } 																					
-            }
-        };
-        panel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        panel.setBackground(Color.decode(BACKGROUND_COLOR));
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.add(panel);
-        window.setVisible(true);    
-        window.pack();
-    }
+     public static void main(String[] args)
+     {
+         JFrame window = new JFrame("Deck");
+	 JPanel panel = new JPanel() {
+	 public void paintComponent(Graphics g) { //find each rank of card in increasing
+	     super.paintComponent(g); //order as specified in the array. All
+	     File[] files = new File(CARD_FOLDER).listFiles(); //ranks appear in the same suit order in
+	     int counter = 0; //the filesystem so suits will automatically
+	     String[] cards; //be in order when printing in groups of four
+	     ArrayList<String> used = new ArrayList<String>(); //cards.
+	     //Allocates memory for all cards
+	     cards = new String[56];
+	     for(String rank : RANKS) {
+	         for(File filename : files) {
+		     if(filename.getName().contains(rank)) {
+		          // Add file name to an array of file names for the cards.
+			  cards[counter] = (String) filename.getPath();
+			  System.out.print(cards[counter] + "\n");
+			  //new ImageIcon(filename.getPath()).paintIcon(this, g,
+			  // PERIMETER_BEVEL + (counter/4) * (CARD_WIDTH + INTERIOR_BEVEL),
+			  // PERIMETER_BEVEL + (3-(counter%4)) * (CARD_HEIGHT + INTERIOR_BEVEL));
+			  counter++;			     
+		      }
+		  }
+	      }
+	      // reset counter because we want to start placing them at 0, not 56
+	      counter = 0;
+	      // for each card name in the array, pull one out (using randCardName)
+	      // and print it to the screen.
+	      while (counter < 56)
+	      {
+	          new ImageIcon(randCardName(cards, counter, used)).paintIcon(this, g,
+				PERIMETER_BEVEL + (counter/4) * (CARD_WIDTH + INTERIOR_BEVEL), //counter/4 keeps track of the correct column
+				PERIMETER_BEVEL + (3-(counter%4)) *(CARD_HEIGHT + INTERIOR_BEVEL)); //3-(counter%4) keeps track of the correct row
+		  counter++; //in which to print the card image
+	      }
+	  }
+      };
+      panel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+      panel.setBackground(Color.decode(BACKGROUND_COLOR));
+      window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      window.add(panel);
+      window.setVisible(true);
+      window.pack();
+  }
 }
