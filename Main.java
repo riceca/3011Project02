@@ -40,6 +40,8 @@ public class Main
         {
             // Grabbing the top card and moving it on the top.
             me.getComponent().getParent().setComponentZOrder(me.getComponent(), 0);
+            labelX = me.getX();
+            labelY = me.getY();
             me.getComponent().getParent().repaint();
         }
         public void mouseDragged (MouseEvent me)
